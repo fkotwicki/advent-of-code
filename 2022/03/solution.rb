@@ -9,4 +9,4 @@ part_one = rucksacks.map { |r| r.chars.each_slice(r.size / 2).to_a }.map{ |c| pr
 part_two = rucksacks.each_slice(3).to_a.map { |g| priority((g[0].chars & g[1].chars & g[2].chars)[0]) }.sum
 
 puts "Part one: #{part_one}"
-puts "Part one: #{part_two}"
+puts "Part two: #{part_two}"
