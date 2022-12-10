@@ -5,9 +5,12 @@ Transposition = {
     :D => [0, -1]
 }
 
-def is_tail_touching?(tail_position, head_position)
-    head_x, head_y = head_position
-    (head_x - tail_position[0]).abs < 2 and (head_y - tail_position[1]).abs < 2
+def move_head(head, direction)
+    [head, Transposition[direction]].transpose.map(&:sum)
+end
+
+def is_tail_touching?(head, tail)
+    (head[0] - tail[0]).abs < 2 and (head[1] - tail[1]).abs < 2
 end
 
 def normalize(num)
@@ -16,23 +19,45 @@ def normalize(num)
     return 1
 end
 
-def move_tail(head_position, tail_position)
-    dx = normalize(head_position[0] - tail_position[0])
-    dy = normalize(head_position[1] - tail_position[1])
-    return [tail_position[0] + dx, tail_position[1] + dy]
+def move_tail(head, tail)
+    dx = normalize(head[0] - tail[0])
+    dy = normalize(head[1] - tail[1])
+    return [tail[0] + dx, tail[1] + dy]
 end
 
 def part_one(moves)
     tail_positions = [[0, 0]]
-    head_position = [0, 0]
-    tail_position = [0, 0]
+    head = [0, 0]
+    tail = [0, 0]
     moves.each do |move|
         direction, steps = move    
         steps.times do
-            head_position = [head_position, Transposition[direction]].transpose.map(&:sum)
-            unless is_tail_touching? tail_position, head_position
-                tail_position = move_tail head_position, tail_position
-                tail_positions << tail_position
+            head = move_head head, direction
+            unless is_tail_touching? head, tail
+                tail = move_tail head, tail
+                tail_positions << tail
+            end
+        end        
+    end
+    tail_positions.uniq.size
+end
+
+def part_two(moves)
+    tail_positions = [[0, 0]]
+    tail_position = [0, 0]
+    rope = 10.times.map {[0, 0]}
+    moves.each do |move|
+        direction, steps = move    
+        steps.times do
+            rope[0] = move_head rope[0], direction
+            for i in 1..rope.size - 1 do
+                previous_knot = rope[i - 1]
+                unless is_tail_touching? previous_knot, rope[i]
+                    rope[i] = move_tail previous_knot, rope[i]
+                    if i == rope.size - 1
+                        tail_positions << rope[i]
+                    end
+                end
             end
         end        
     end
@@ -45,3 +70,4 @@ moves = File.readlines("input.txt").map(&:strip).map { |line|
 }
 
 puts "Part one: #{part_one moves}"
+puts "Part two: #{part_two moves}"

@@ -30,7 +30,7 @@ end
 
 class Screen
     
-    def initialize(max_height, max_width)
+    def initialize(max_width, max_height)
         @max_width = max_width
         @display = max_height.times.map { "" }
         @current_display_row = 0
@@ -43,8 +43,8 @@ class Screen
         end
     end
 
-    def already_drawn?(*pos)
-        pos.include? @display[@current_display_row].size
+    def pixel_position
+        @display[@current_display_row].size
     end
 
     def print
@@ -66,7 +66,7 @@ def part_one(instructions)
 end
 
 def part_two(instructions)
-    screen = Screen.new 6, 40
+    screen = Screen.new 40, 6
     cpu = CPU.new
     
     sprite_position = 1
@@ -75,8 +75,7 @@ def part_two(instructions)
     end
 
     cpu.process instructions do |total_cycles, register_x|
-        pixel = (screen.already_drawn?(sprite_position - 1, sprite_position, sprite_position + 1)) ? '#' : '.'
-        screen.draw pixel
+        screen.draw ((sprite_position - 1..sprite_position + 1).include? screen.pixel_position) ? '#' : '.'
     end
 
     screen.print
