@@ -7,7 +7,7 @@ def merge_dicts(dicts):
 def extract_cube_sets(game):
     return [merge_dicts(list(map(lambda cube: dict([(cube.split()[1], int(cube.split()[0]))]), cube_set))) for cube_set in [cube_set.split(',') for cube_set in game.split(':')[1].strip().split(';')]]
 
-def day_one(games):
+def part_one(games):
     ids = [] 
     for game in games:
         cube_sets = list(filter(lambda game_set: (game_set.get('red', 0) > 12 or game_set.get('green', 0) > 13 or game_set.get('blue', 0) > 14), extract_cube_sets(game)))
@@ -15,7 +15,7 @@ def day_one(games):
             ids.append(int(game.split(':')[0].split()[1]))
     return sum(ids)
 
-def day_two(games):
+def part_two(games):
     power = 0
     for game in games:
         min_cubes = { 'blue': 0, 'green': 0, 'red': 0} 
@@ -29,5 +29,5 @@ def day_two(games):
 file = open('input.txt')
 games = [line.removesuffix('\n') for line in file]
 
-print(f'Day one: {day_one(games)}')
-print(f'Day two: {day_two(games)}')
+print(f'Part one: {part_one(games)}')
+print(f'Part two: {part_two(games)}')
