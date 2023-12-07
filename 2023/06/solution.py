@@ -1,5 +1,6 @@
 from functools import reduce
 from operator import mul
+from math import sqrt, ceil
 
 input = open('input.txt').read().splitlines()
 
@@ -22,5 +23,11 @@ def part_one(input):
     time_and_distance = zip(times, distances)
     return reduce(mul, [how_many_ways_to_win(tad[0], tad[1]) for tad in time_and_distance])
 
+def part_two(input):
+    time = int(input[0].split(':')[1].strip().replace(' ', ''))
+    distance = int(input[1].split(':')[1].strip().replace(' ', ''))
+    return time + 1 - 2 * ceil((time - sqrt(time**2 - 4 * distance)) / 2) # quadratic formula
+
 print(f'Part one {part_one(input)}')
+print(f'Part two {part_two(input)}')
 
